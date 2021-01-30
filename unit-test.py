@@ -1,13 +1,14 @@
 from selenium import webdriver
 from module.utils import check_response
+from module import select
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.expected_conditions import presence_of_element_located
 from selenium.webdriver.support import expected_conditions as EC
+import pandas as pd
 import os
 import time
 import asyncio
-
 
 def main():
     driver = webdriver.Chrome()
@@ -39,26 +40,14 @@ def main():
     for i in home:
         selection['user_type_home'][i.get_attribute('for')] = dict()
 
-    for idx, value in selection['user_type_home'].items():
-        selection['user_type_home'][str(idx)] = []
-        print(idx)
-        driver.find_element(
-            By.XPATH, "//input[@id="+"'"+str(idx)+"'"+"]").click()
+    ## iterate all function in first page
+    # select1 = select.select_1by1(driver, selection)
+    # print(select1)
+    select2 = select.select_2by2(driver, selection)
+    print(select2)
 
-        # Click "next" button
-        element = driver.find_element_by_css_selector("button.margin_bottom30")
-        driver.execute_script("arguments[0].click()", element)
-
-        ## collect all types of requirement
-        driver.find_elements_by_xpath("//label[starts-with(@for,'app_')]")
-        for sub_idx, sub_value in selection['user_type_home'][str(idx)].items():
-            selection['user_type_home'][str(idx)].append(str(sub_idx))
-
-
-        break
-
-    time.sleep(10)
-    driver.close()
+    # time.sleep(10)
+    # driver.close()
 
 
 if __name__ == "__main__":

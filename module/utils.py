@@ -11,10 +11,3 @@ def check_response(url):
     except Exception as ex:
         return str(ex)
 
-
-def driver_out(driver):
-    try:
-        driver.close()
-        return True
-    except Exception as ex:
-        return str(ex)
