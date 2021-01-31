@@ -10,7 +10,9 @@ import asyncio
 
 
 def main():
-    driver = webdriver.Chrome()
+    ## when using mac
+    durl ="./chromedriver"
+    driver = webdriver.Chrome(durl)
 
     wait = WebDriverWait(driver, 10)
     url = "https://www.synology.com/zh-tw/support/nas_selector"
@@ -21,8 +23,12 @@ def main():
         driver.get(url)
 
     selection = {
-        "user_type_business": {},
-        "user_type_home": {},
+        "user_type_business": {
+
+        },
+        "user_type_home": {
+
+        },
     }
     # collect options
     driver.find_element(By.XPATH, "//label[@for='user_type_business']").click()
@@ -41,23 +47,25 @@ def main():
 
     for idx, value in selection['user_type_home'].items():
         selection['user_type_home'][str(idx)] = []
-        print(idx)
-        driver.find_element(
-            By.XPATH, "//input[@id="+"'"+str(idx)+"'"+"]").click()
+        # print("idx: ",idx)
+        driver.find_element(By.XPATH, "//input[@id="+"'"+str(idx)+"'"+"]").click()
 
         # Click "next" button
         element = driver.find_element_by_css_selector("button.margin_bottom30")
         driver.execute_script("arguments[0].click()", element)
-
+        
+        element2=driver.find_elements_by_class_name("nas_s_lab")
+        for i in element2:
+            print(i.get_attribute('for'))
         ## collect all types of requirement
-        driver.find_elements_by_xpath("//label[starts-with(@for,'app_')]")
-        for sub_idx, sub_value in selection['user_type_home'][str(idx)].items():
-            selection['user_type_home'][str(idx)].append(str(sub_idx))
+        # driver.find_elements_by_xpath("//label[starts-with(@for,'app_')]")
+        # for sub_idx, sub_value in selection['user_type_home'][str(idx)].items():
+        #     selection['user_type_home'][str(idx)].append(str(sub_idx))
 
 
         break
 
-    time.sleep(10)
+    time.sleep(3)
     driver.close()
 
 

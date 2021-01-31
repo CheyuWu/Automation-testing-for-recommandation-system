@@ -11,7 +11,9 @@ import time
 import asyncio
 
 def main():
-    driver = webdriver.Chrome()
+    ## when using mac
+    durl = "./chromedriver"
+    driver = webdriver.Chrome(durl)
 
     wait = WebDriverWait(driver, 10)
     url = "https://www.synology.com/zh-tw/support/nas_selector"
@@ -22,8 +24,8 @@ def main():
         driver.get(url)
 
     selection = {
-        "user_type_business": {},
         "user_type_home": {},
+        "user_type_business": {},  
     }
     # collect options
     driver.find_element(By.XPATH, "//label[@for='user_type_business']").click()
@@ -41,10 +43,10 @@ def main():
         selection['user_type_home'][i.get_attribute('for')] = dict()
 
     ## iterate all function in first page
-    # select1 = select.select_1by1(driver, selection)
-    # print(select1)
-    select2 = select.select_2by2(driver, selection)
-    print(select2)
+    select1 = select.select_1by1(driver, selection)
+    print(select1)
+    # select2 = select.select_2by2(driver, selection)
+    # print(select2)
 
     # time.sleep(10)
     # driver.close()
