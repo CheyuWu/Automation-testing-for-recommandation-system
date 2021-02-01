@@ -23,11 +23,12 @@ def click_btn(driver, click_lst):
 def select_1by1(driver, selection):
     try:
         for user_type, btn in selection.items():
-            driver.find_element(By.XPATH, "//label[@for="+"'"+str(user_type)+"'"+"]").click()
-            for cond, options in btn.items():
+            driver.find_element(By.XPATH, "//label[@for='"+str(user_type)+"']").click()
+            #for cond, options in btn.items():
                 ## check first pages is functionable
-                result = first_page_select(driver, cond)
-                
+                # result_1 = first_page_select(driver, cond)
+                # result_2 = second_page_select(driver, options)
+                # driver.find_element_by_id("reset_result").click()
 
 
                 # result = first_page_select(driver, list(selection[str(key)].keys())[i])
@@ -35,15 +36,15 @@ def select_1by1(driver, selection):
     except Exception as ex:
         # do something
         print("select_1by1: ", ex)
-        return result
+        return #result
 
-    return result
+    return #result
 
 def first_page_select(driver, condition):
     try:
         # Click the button
         click_result = click_btn(driver, condition)
-        print("condition: ",condition)
+        # print("condition: ",condition)
         if not click_result:
             # do something
             pass
@@ -99,6 +100,7 @@ def second_page_select(driver, options):
                     blank=driver.find_element_by_xpath("//input[@iops='"+str(i)+"']")
                     blank.clear()
                     blank.send_keys("25")
+
             # Click "next" button to the third page
             element = driver.find_element_by_css_selector("button.btn.btn-primary.blue")
             driver.execute_script("arguments[0].click()", element)
