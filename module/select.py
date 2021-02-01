@@ -57,14 +57,16 @@ def first_page_select(driver, name, next_page=False):
         print("first_page_select: ", ex)
         return False
 
-def second_page(driver, name):
+def second_page_collect_1by1(driver, name):
     try:
-        print(name)
-        element = driver.find_elements_by_class_name("nas_s_lab")
-
+        dict_element = dict()
+        element = driver.find_element_by_id("nas_s_lab")
+        for i in element:
+            dict_element[i]={}
+        return dict_element
     except Exception as ex:
-        print("second_page: ",str(ex))
-    
+        print("second_page_collect_1by1: ",str(ex))
+        return False
 
 
 def select_1by1(driver, selection):

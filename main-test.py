@@ -24,10 +24,20 @@ def main():
 
     selection = {
         "user_type_business": {
+            "app_fileserver":[],
+            "app_databackup":[],
+            "app_iscsi":[],
+            "app_collatboration":[], 
+            "app_mailserver":[],
+            "app_vmm":[],
 
         },
         "user_type_home": {
-
+            "app_fileserver":["how_many_people_checkbox_people_less","how_many_people_checkbox_people_medium","how_many_people_checkbox_people_large"],
+            "app_databackup":["how_many_people_checkbox_people_less","how_many_people_checkbox_people_medium","how_many_people_checkbox_people_large"],
+            "app_multimedia":["need_image_recognition_checkbox_no_image_reco","need_image_recognition_checkbox_yes_image_reco"],
+            "app_productivity":["how_many_people_checkbox_people_large","how_many_people_checkbox_people_medium","how_many_people_checkbox_people_less"],
+            "app_vmm":["","how_many_virtual_machines_for_home_checkbox_vmm_medium"],
         },
     }
     # collect options
@@ -53,10 +63,12 @@ def main():
         # Click "next" button
         element = driver.find_element_by_css_selector("button.margin_bottom30")
         driver.execute_script("arguments[0].click()", element)
-        
+
         element2=driver.find_elements_by_class_name("nas_s_lab")
         for i in element2:
-            print(i.get_attribute('for'))
+            print("for : ",i.get_attribute('for'))
+            element_sub=driver.find_element_by_id(i.get_attribute('for'))
+            print("name : ",element_sub.get_attribute("name"))
         ## collect all types of requirement
         # driver.find_elements_by_xpath("//label[starts-with(@for,'app_')]")
         # for sub_idx, sub_value in selection['user_type_home'][str(idx)].items():
