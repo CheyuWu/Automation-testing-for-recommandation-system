@@ -12,7 +12,7 @@ import asyncio
 
 def main():
     ## when using mac
-    durl = "./chromedriver"
+    durl = "./chromedriver.exe"
     driver = webdriver.Chrome(durl)
 
     wait = WebDriverWait(driver, 10)
