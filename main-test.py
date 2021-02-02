@@ -4,6 +4,8 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.expected_conditions import presence_of_element_located
 from selenium.webdriver.support import expected_conditions as EC
+from module.all_flow import select_1by1
+
 import os
 import time
 import asyncio
@@ -11,7 +13,7 @@ import asyncio
 
 def main():
     # when using mac
-    durl = "./chromedriver"
+    durl = "./chromedriver.exe"
     driver = webdriver.Chrome(durl)
 
     wait = WebDriverWait(driver, 10)
@@ -24,17 +26,9 @@ def main():
     
     ## Assume we get data from database or api
     selection = get_data()
+    result = select_1by1(driver, selection)
+    print("result: ", result)
 
-    for user_type, btn in selection.items():
-        driver.find_element(By.XPATH, "//label[@for="+"'"+str(user_type)+"'"+"]").click()
-        for cond, opt in btn.items():
-            print(cond,)
-            for idx, lst in opt.items():
-                print(idx)
-                print(lst)
-                break
-            break
-        break
         # selection['user_type_home'][str(idx)] = []
         # # print("idx: ",idx)
         # driver.find_element(
@@ -56,7 +50,7 @@ def main():
 
         # break
 
-    time.sleep(3)
+    time.sleep(10)
     driver.close()
 
 

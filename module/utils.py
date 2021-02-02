@@ -66,7 +66,7 @@ def get_data():
                     "how_many_devices_checkbox_devices_less",
                     "how_many_devices_checkbox_devices_medium",
                     "how_many_devices_checkbox_devices_large",
-                    "how_many_throughput_checkbox_throughput_large"
+                    "how_many_devices_checkbox_devices_large"
                 ],
             },
             "app_mailserver": {
