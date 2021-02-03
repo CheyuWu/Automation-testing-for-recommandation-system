@@ -122,7 +122,9 @@ def third_page_test(driver):
             # it can't be compare, if len is lower than 2
             if len(output_prods) < 2:
                 continue
-            
+            res=third_page_unclick_test(driver,output_prods)
+            print(res)
+            break
             for sub_prod in output_prods:
                 try:
                     sub_btn = sub_prod.find_element_by_xpath(
@@ -188,14 +190,31 @@ def compare_result(driver):
         return False
 
 def third_page_unclick_test(driver, output_prods):
+    data_name=None
     for sub_prod in output_prods:
         try:
             sub_btn = sub_prod.find_element_by_xpath("//a[@class='add_to_compare tip']")
-            
             driver.execute_script("arguments[0].click()", sub_btn)
-
+            ## Store the latest data-name
+            data_name = sub_btn.get_attribute('data-name')
+            print(data_name)
         except NoSuchElementException:
-            break
-    
+            
+            ## unclick the previous one
+            prev_sub_btn=sub_prod.find_element_by_xpath("//a[@data-name='"+data_name+"']")
+            print("unclick:",prev_sub_btn.get_attribute('data-name'))
+            driver.execute_script("arguments[0].click()", prev_sub_btn)
+            time.sleep(3)
+            ## Click the current one
+            sub_btn = sub_prod.find_element_by_xpath("//a[@class='add_to_compare tip']")
+            print("click:",sub_btn.get_attribute('data-name'))
+            driver.execute_script("arguments[0].click()", sub_btn)
+            time.sleep(3)
 
-    return
+    item_arr = driver.find_elements_by_xpath("//a[@class='btn-remove']")
+    for element in item_arr:
+        time.sleep(1)
+        driver.execute_script("arguments[0].click()", element)
+
+        
+    return True

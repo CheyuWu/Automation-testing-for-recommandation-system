@@ -25,12 +25,12 @@ def main():
         driver.get(url)
         # Assume we got data from database or api
         selection = get_data()
-        # Select 1 by 1 and check the workflow of the 1-3 page is functionable
-        page_1, page_2 = select_1by1(driver, selection)
-        print("page_1: ", page_1)
-        print("page_2: ", page_2)
-        time.sleep(3)
-        driver.refresh()
+        # # Select 1 by 1 and check the workflow of the 1-3 page is functionable
+        # page_1, page_2 = select_1by1(driver, selection)
+        # print("page_1: ", page_1)
+        # print("page_2: ", page_2)
+        # time.sleep(3)
+        # driver.refresh()
 
         # Third page Test
         page_3 = third_page_test(driver)
