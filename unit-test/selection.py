@@ -106,7 +106,7 @@ def first_page_select(driver, condition):
         element = driver.find_element_by_css_selector("a.btn.page2-buttons-back")
         driver.execute_script("arguments[0].click()", element)
 
-        # # Click "next" button, back to the second page
+        ## Click "next" button, back to the second page
         # element = driver.find_element_by_css_selector("button.margin_bottom30.btn.btn-primary.blue")
         # driver.execute_script("arguments[0].click()", element)
 
@@ -134,7 +134,6 @@ def second_page_select(driver, condition, options):
         pass
 
     arr = []
-    count = 0
     iops_arr = None
     # iops_flag=False
     for idx, lst in options.items():
@@ -168,7 +167,6 @@ def second_page_select(driver, condition, options):
         all_possible = list(itertools.product(*arr))
 
         for element in all_possible:
-            count += 1
             # Click the second page btn
             for sub_elmt in element:
                 # try:
@@ -202,8 +200,8 @@ def second_page_select(driver, condition, options):
 
     # Click back to menu pages
     # back to previous page
-    # action_chain.move_to_element(driver.find_element_by_xpath(
-    #     "//i[@class='fa fa-angle-left']")).click().perform()
+    action_chain.move_to_element(driver.find_element_by_xpath(
+        "//i[@class='fa fa-angle-left']")).click().perform()
 
     return True
 
