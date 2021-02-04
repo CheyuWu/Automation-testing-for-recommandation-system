@@ -89,8 +89,7 @@ def select_1by1(driver, selection):
 def select_2by2(driver, selection):
     try:
         for key in selection.keys():
-            driver.find_element(
-                By.XPATH, "//label[@for="+"'"+str(key)+"'"+"]").click()
+            driver.find_element(By.XPATH, "//label[@for="+"'"+str(key)+"'"+"]").click()
 
             for i in range(len(selection[str(key)])):
 

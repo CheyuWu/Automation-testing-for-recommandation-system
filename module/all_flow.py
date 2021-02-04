@@ -26,7 +26,7 @@ def select_1by1(driver, selection):
                 if not click_result_first_page:
                     page_1 = False
 
-                print("condition", cond)
+                # print("condition", cond)
                 arr = []
                 iops_arr = None
                 for idx, lst in options.items():
@@ -67,13 +67,13 @@ def select_1by1(driver, selection):
 
                         driver.execute_script(
                             "arguments[0].click()", radio_btn)
-                    # if multi selected and iops is selected, we need to test iops
-                    if iops_arr:
-                        for i in iops_arr:
-                            blank = driver.find_element_by_xpath(
-                                "//input[@iops='"+str(i)+"']")
-                            blank.clear()
-                            blank.send_keys("25")
+                    # # if multi selected and iops is selected, we need to test iops
+                    # if iops_arr:
+                    #     for i in iops_arr:
+                    #         blank = driver.find_element_by_xpath(
+                    #             "//input[@iops='"+str(i)+"']")
+                    #         blank.clear()
+                    #         blank.send_keys("25")
 
                     second_to_third_result = btn_in_second_page(driver)
                     # If page 2 occur error, then False
@@ -105,6 +105,26 @@ def select_1by1(driver, selection):
         return False
 
 
+def select_2by2(driver, selection):
+    for user_type in selection.keys():
+        res = WebDriverWait(driver, 10).until(EC.element_to_be_clickable(
+                (By.XPATH, "//label[@for='"+str(user_type)+"']")))
+        driver.execute_script("arguments[0].click()", res)
+
+        for i in range(len(selection[str(user_type)])):
+            for j in range(i+1, len(selection[str(user_type)])):
+                if i == (len(selection[str(user_type)])-1):
+                    break
+                slt = list(selection[str(user_type)].keys())
+                arr = [slt[i], slt[j]]
+                result=btn_in_first_page(driver, arr)
+                
+
+
+
+    return
+
+
 def third_page_test(driver):
     try:
         # Go to third page
@@ -122,14 +142,15 @@ def third_page_test(driver):
             # it can't be compare, if len is lower than 2
             if len(output_prods) < 2:
                 continue
-            res=third_page_unclick_test(driver,output_prods)
-            print(res)
-            break
+            res = third_page_unclick_test(driver, output_prods)
+            if not res:
+                return False
+
             for sub_prod in output_prods:
                 try:
                     sub_btn = sub_prod.find_element_by_xpath(
                         "//a[@class='add_to_compare tip']")
-                    
+
                     driver.execute_script("arguments[0].click()", sub_btn)
 
                 except NoSuchElementException:
@@ -155,6 +176,7 @@ def third_page_test(driver):
     except Exception as ex:
         print(str(ex))
         return False
+
 
 def compare_result(driver):
     try:
@@ -189,32 +211,116 @@ def compare_result(driver):
         print(str(ex))
         return False
 
+
 def third_page_unclick_test(driver, output_prods):
-    data_name=None
-    for sub_prod in output_prods:
-        try:
-            sub_btn = sub_prod.find_element_by_xpath("//a[@class='add_to_compare tip']")
-            driver.execute_script("arguments[0].click()", sub_btn)
-            ## Store the latest data-name
-            data_name = sub_btn.get_attribute('data-name')
-            print(data_name)
-        except NoSuchElementException:
+    try:
+        data_name = None
+        for idx in range(len(output_prods)):
+            try:
+                # print(idx)
+                sub_btn = output_prods[idx].find_element_by_xpath(
+                    "//a[@class='add_to_compare tip']")
+                driver.execute_script("arguments[0].click()", sub_btn)
+                # Store the latest data-name
+                data_name = sub_btn.get_attribute('data-name')
+                # print(data_name)
+            except NoSuchElementException:
+
+                # unclick the previous one
+                prev_sub_btn = output_prods[idx-1].find_element_by_xpath(
+                    "//a[@data-name='"+data_name+"']")
+                # print("unclick:",prev_sub_btn.get_attribute('data-name'))
+                driver.execute_script("arguments[0].click()", prev_sub_btn)
+
+                # Click the current one
+                # The total slot is 5
+                sub_btn = output_prods[idx].find_elements_by_xpath(
+                    "//a[@class='add_to_compare tip']")[idx-4]
+                # print("click:",sub_btn.get_attribute('data-name'))
+                data_name = sub_btn.get_attribute('data-name')
+                driver.execute_script("arguments[0].click()", sub_btn)
+
+        item_arr = driver.find_elements_by_xpath("//a[@class='btn-remove']")
+        for element in item_arr:
+
+            driver.execute_script("arguments[0].click()", element)
+
+        return True
+    except Exception as ex:
+        print(str(ex))
+        return False
+
+
+def select_4orMore(driver, selection):
+    try:
+        flag = True
+        for key, values in selection.items():
+            driver.find_element_by_id(str(key)).click()
+
+            for idx, app in enumerate(list(values.keys())):
+                app_btn = driver.find_element_by_id(str(app))
+                driver.execute_script("arguments[0].click()", app_btn)
+
+                element = driver.find_element_by_css_selector(
+                    "button.margin_bottom30")
+                # print("disabled: ",element.get_attribute('disabled'))
+                if (idx+1) > 3 and not element.get_attribute('disabled'):
+                    flag = False
+
+        return flag
+    except Exception as ex:
+        print(str(ex))
+        return False
+
+
+def app_iscsi_test(driver, selection):
+    try:
+        flag = True
+
+        for i in selection['user_type_business']['app_iscsi']['iops']:
+            user_type = driver.find_element_by_id('user_type_business')
+            driver.execute_script("arguments[0].click()", user_type)
+
+            app_btn = driver.find_element_by_id('app_iscsi')
+            driver.execute_script("arguments[0].click()", app_btn)
+
+            element = driver.find_element_by_css_selector("button.margin_bottom30")
+            driver.execute_script("arguments[0].click()", element)
+
+            WebDriverWait(driver, 10).until(EC.presence_of_element_located(
+                (By.XPATH, "//input[@iops='"+str(i)+"']"))
+            )
+            ## click next and check if it will go to third page, then False
             
-            ## unclick the previous one
-            prev_sub_btn=sub_prod.find_element_by_xpath("//a[@data-name='"+data_name+"']")
-            print("unclick:",prev_sub_btn.get_attribute('data-name'))
-            driver.execute_script("arguments[0].click()", prev_sub_btn)
-            time.sleep(3)
-            ## Click the current one
-            sub_btn = sub_prod.find_element_by_xpath("//a[@class='add_to_compare tip']")
-            print("click:",sub_btn.get_attribute('data-name'))
-            driver.execute_script("arguments[0].click()", sub_btn)
-            time.sleep(3)
+            driver.find_element_by_xpath("//button[@class='btn btn-primary blue']").click()
+            element = driver.find_element_by_xpath("//label[@class='error_vmm_total']")
+            
+            if element.get_attribute('style') != '':
+                flag = False
+            
 
-    item_arr = driver.find_elements_by_xpath("//a[@class='btn-remove']")
-    for element in item_arr:
-        time.sleep(1)
-        driver.execute_script("arguments[0].click()", element)
+            blank = driver.find_element_by_xpath("//input[@iops='"+str(i)+"']")
+            blank.clear()
+            blank.send_keys("100")
+            driver.find_element_by_xpath("//button[@class='btn btn-primary blue']").click()
 
-        
-    return True
+            # wait
+            WebDriverWait(driver, 10).until(EC.presence_of_element_located(
+                (By.XPATH, "//div[@id='reset_result']"))
+            )
+
+            reset = driver.find_element_by_id("reset_result")
+            driver.execute_script("arguments[0].click()", reset)
+
+            ress = WebDriverWait(driver, 10,).until(
+                EC.presence_of_element_located((By.XPATH, "//label[@for='user_type_business']")))
+
+
+        return flag
+    except Exception as ex:
+        print("app_iscsi_test",str(ex))
+        return False
+    
+    
+
+
