@@ -3,6 +3,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
+
 def check_response(url):
     try:
         request = get(url)
@@ -88,8 +89,9 @@ def get_data():
         },
         "user_type_home": {
             "app_fileserver": {
-                "how_many_people": ["how_many_people_checkbox_people_less",
-                                    "how_many_people_checkbox_people_medium", "how_many_people_checkbox_people_large"]
+                "how_many_people":
+                ["how_many_people_checkbox_people_less",
+                 "how_many_people_checkbox_people_medium", "how_many_people_checkbox_people_large"]
             },
             "app_databackup": {
                 "how_many_people":
@@ -116,20 +118,23 @@ def get_data():
 
 
 def pathway_to_third_page(driver):
-    
+
     try:
         element = driver.find_element_by_xpath("//input[@id='user_type_home']")
         driver.execute_script("arguments[0].click()", element)
 
-        element = driver.find_element(By.XPATH, "//input[@id='app_fileserver']")
+        element = driver.find_element(
+            By.XPATH, "//input[@id='app_fileserver']")
         driver.execute_script("arguments[0].click()", element)
 
         # Click "next" button
         element = driver.find_element_by_css_selector("button.margin_bottom30")
         driver.execute_script("arguments[0].click()", element)
 
-        driver.find_element_by_id("how_many_people_checkbox_people_medium").click()
-        next_btn = driver.find_element_by_xpath("//button[@class='btn btn-primary blue']")
+        driver.find_element_by_id(
+            "how_many_people_checkbox_people_medium").click()
+        next_btn = driver.find_element_by_xpath(
+            "//button[@class='btn btn-primary blue']")
         driver.execute_script("arguments[0].click()", next_btn)
 
         # wait until the third page loaded
@@ -138,9 +143,9 @@ def pathway_to_third_page(driver):
         )
         return True
     except Exception as ex:
-        print("pathway_to_third_page: ",str(ex))
+        print("pathway_to_third_page: ", str(ex))
         return False
-    
+
 
 def btn_in_first_page(driver, condition):
     try:
@@ -161,6 +166,8 @@ def btn_in_first_page(driver, condition):
         return False
 
 # click the btn in the second pages
+
+
 def btn_in_second_page(driver):
     try:
         # Click "next" button to the third page
@@ -178,6 +185,7 @@ def btn_in_second_page(driver):
         # do something
         print("click_first_btn: ", ex)
         return False
+
 
 def click_btn(driver, click_lst):
     try:
@@ -197,3 +205,8 @@ def click_btn(driver, click_lst):
         # do something
         print("click_btn: ", ex)
         return False
+
+
+def items_btn_click(driver, click_lst):
+
+    return

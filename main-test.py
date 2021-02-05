@@ -4,7 +4,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.expected_conditions import presence_of_element_located
 from selenium.webdriver.support import expected_conditions as EC
-from module.all_flow import select_1by1, third_page_test, select_4orMore, app_iscsi_test
+from module.all_flow import select_1by1, third_page_test, select_4orMore, app_iscsi_test, select_2by2
 import os
 import time
 import asyncio
@@ -36,7 +36,9 @@ def main():
         # print("Page 2 functionable? ", page_2)
         # time.sleep(3)
         # driver.refresh()
-        app_iscsi_test(driver, selection)
+        ## Select 2 by 2
+        select_2by2(driver, selection)
+        # app_iscsi_test(driver, selection)
 
         ## Third page Test
         # page_3 = third_page_test(driver)

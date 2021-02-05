@@ -106,6 +106,7 @@ def select_1by1(driver, selection):
 
 
 def select_2by2(driver, selection):
+    flag= True
     for user_type in selection.keys():
         res = WebDriverWait(driver, 10).until(EC.element_to_be_clickable(
                 (By.XPATH, "//label[@for='"+str(user_type)+"']")))
@@ -117,8 +118,44 @@ def select_2by2(driver, selection):
                     break
                 slt = list(selection[str(user_type)].keys())
                 arr = [slt[i], slt[j]]
-                result=btn_in_first_page(driver, arr)
                 
+                result=btn_in_first_page(driver, arr)
+
+                if not result:
+                    flag = False
+
+                ## handle options in second page
+                ### store the btn that has been clicked
+                
+                for idx, element in selection[str(user_type)][slt[i]].items():
+                    driver.find_element_by_id(str(element[0])).click()
+                    for idx_j, element_j in selection[str(user_type)][slt[j]].items():
+                        if idx_j != idx:
+                            pass
+                            
+
+                    selection[str(user_type)][slt[j]]
+                    print(idx)
+                    print(element)
+                    break
+                break
+            break
+
+
+
+
+                # back_btn=driver.find_element_by_xpath("//a[@class='btn page2-buttons-back']")
+                # driver.execute_script("arguments[0].click()", back_btn)
+
+                # ## unclick the app
+                # click_result = click_btn(driver, arr)
+                # if not click_result:
+                #     # do something
+                #     flag = False
+
+
+
+
 
 
 
