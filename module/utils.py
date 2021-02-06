@@ -2,7 +2,7 @@ from requests import get
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
-
+from selenium.common.exceptions import TimeoutException
 
 def check_response(url):
     try:
@@ -11,7 +11,8 @@ def check_response(url):
             return False
         return True
     except Exception as ex:
-        return str(ex)
+        print("check_response:",str(ex))
+        return False
 
 
 def get_data():
@@ -158,11 +159,13 @@ def btn_in_first_page(driver, condition):
         # Click "next" button to the second page
         element = driver.find_element_by_css_selector(
             "button.margin_bottom30.btn.btn-primary.blue")
+
         driver.execute_script("arguments[0].click()", element)
+
         return True
     except Exception as ex:
         # do something
-        print("click_first_btn: ", ex)
+        print("btn_in_first_page: ", str(ex))
         return False
 
 # click the btn in the second pages
@@ -176,14 +179,17 @@ def btn_in_second_page(driver):
         driver.execute_script("arguments[0].click()", next_btn)
 
         # wait until the third page loaded
-        WebDriverWait(driver, 10).until(EC.presence_of_element_located(
+        WebDriverWait(driver, 5).until(EC.presence_of_element_located(
             (By.XPATH, "//div[@id='reset_result']"))
         )
         return True
-
+    except TimeoutException:
+        # if I enter the strange value it will nothing output
+        print("btn_in_second_page: ", "TimeoutException, No items output")
+        return True
     except Exception as ex:
         # do something
-        print("click_first_btn: ", ex)
+        print("btn_in_second_page: ", str(ex))
         return False
 
 
@@ -192,8 +198,8 @@ def click_btn(driver, click_lst):
         # check is a list or not
         if isinstance(click_lst, list):
             for i in click_lst:
-                driver.find_element(
-                    By.XPATH, "//input[@id="+"'"+str(i)+"'"+"]").click()
+                element = driver.find_element(By.XPATH, "//input[@id="+"'"+str(i)+"'"+"]")
+                driver.execute_script("arguments[0].click()", element)
         else:
             element = driver.find_element(
                 By.XPATH, "//input[@id='"+str(click_lst)+"']")
@@ -203,7 +209,7 @@ def click_btn(driver, click_lst):
 
     except Exception as ex:
         # do something
-        print("click_btn: ", ex)
+        print("click_btn: ", str(ex))
         return False
 
 

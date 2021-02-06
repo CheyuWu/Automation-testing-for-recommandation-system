@@ -67,13 +67,6 @@ def select_1by1(driver, selection):
 
                         driver.execute_script(
                             "arguments[0].click()", radio_btn)
-                    # # if multi selected and iops is selected, we need to test iops
-                    # if iops_arr:
-                    #     for i in iops_arr:
-                    #         blank = driver.find_element_by_xpath(
-                    #             "//input[@iops='"+str(i)+"']")
-                    #         blank.clear()
-                    #         blank.send_keys("25")
 
                     second_to_third_result = btn_in_second_page(driver)
                     # If page 2 occur error, then False
@@ -99,6 +92,7 @@ def select_1by1(driver, selection):
                 if not click_result:
                     # do something
                     page_1 = False
+                    
         return page_1, page_2
     except Exception as ex:
         print("select_1by1:", str(ex))
@@ -106,43 +100,77 @@ def select_1by1(driver, selection):
 
 
 def select_2by2(driver, selection):
-    flag= True
-    for user_type in selection.keys():
-        res = WebDriverWait(driver, 10).until(EC.element_to_be_clickable(
-                (By.XPATH, "//label[@for='"+str(user_type)+"']")))
-        driver.execute_script("arguments[0].click()", res)
+    try:
+        AC = ActionChains(driver)
+        wait = WebDriverWait(driver, 10)
+        flag = True
+        iops_flag = False
+        for user_type in selection.keys():
 
-        for i in range(len(selection[str(user_type)])):
-            for j in range(i+1, len(selection[str(user_type)])):
-                if i == (len(selection[str(user_type)])-1):
-                    break
-                slt = list(selection[str(user_type)].keys())
-                arr = [slt[i], slt[j]]
-                
-                result=btn_in_first_page(driver, arr)
+            for i in range(len(selection[str(user_type)])):
+                for j in range(i+1, len(selection[str(user_type)])):
 
-                if not result:
-                    flag = False
+                    if i == (len(selection[str(user_type)])-1):
+                        break
+                    slt = list(selection[str(user_type)].keys())
+                    arr = [slt[i], slt[j]]
+                    ## Click the user type: user or business
+                    user_btn = wait.until(EC.element_to_be_clickable(
+                        (By.XPATH, "//label[@for='"+str(user_type)+"']")))
+                    driver.execute_script("arguments[0].click()", user_btn)
+                    result = btn_in_first_page(driver, arr)
 
-                ## handle options in second page
-                ### store the btn that has been clicked
-                
-                for idx, element in selection[str(user_type)][slt[i]].items():
-                    driver.find_element_by_id(str(element[0])).click()
-                    for idx_j, element_j in selection[str(user_type)][slt[j]].items():
-                        if idx_j != idx:
-                            pass
-                            
+                    if not result:
+                        flag = False
 
-                    selection[str(user_type)][slt[j]]
-                    print(idx)
-                    print(element)
-                    break
-                break
-            break
+                    # handle options in second page
+                    # click the first btn 
+                    for idx_i, element_i in selection[str(user_type)][slt[i]].items():
+                        if idx_i =='iops':
+                            for value_i in element_i:
+                                iops_input=driver.find_element_by_xpath("//input[@iops='"+str(value_i)+"']")
+                                iops_input.clear()
+                                iops_input.send_keys(25)
 
+                        else :
+                            sub_btn_i = driver.find_element_by_id(str(element_i[0]))
+                            driver.execute_script("arguments[0].click()", sub_btn_i)
 
+                        for idx_j, element_j in selection[str(user_type)][slt[j]].items():
+                            if idx_j not in selection[str(user_type)][slt[i]].keys():
+                                
+                                if idx_j !='iops':
+                                    sub_btn_j = driver.find_element_by_id(str(element_j[0]))
+                                    driver.execute_script("arguments[0].click()", sub_btn_j)
 
+                                elif idx_j =='iops' and (not iops_flag):
+                                    
+                                    for value in element_j:
+                                        iops_input=driver.find_element_by_xpath("//input[@iops='"+str(value)+"']")
+                                        iops_input.clear()
+                                        iops_input.send_keys(15)
+                                    iops_flag = True
+                                    break
+
+                    ## Reset iops flag
+                    iops_flag = False
+
+                    ## Go to third page
+                    third_page = btn_in_second_page(driver)
+                    if not third_page:
+                        flag = False
+                    try:
+                        reset_btn = driver.find_element_by_id('reset_result')
+                        driver.execute_script("arguments[0].click()", reset_btn)
+                    except NoSuchElementException:
+                        back_btn=driver.find_element_by_xpath("//i[@class='fa fa-angle-left']")
+                        AC.move_to_element(back_btn).double_click().perform()
+                        ## unclick the app
+                        click_result = click_btn(driver, arr)
+                        if not click_result:
+                            # do something
+                            flag = False
+                    
 
                 # back_btn=driver.find_element_by_xpath("//a[@class='btn page2-buttons-back']")
                 # driver.execute_script("arguments[0].click()", back_btn)
@@ -152,15 +180,15 @@ def select_2by2(driver, selection):
                 # if not click_result:
                 #     # do something
                 #     flag = False
+        return flag
+    except Exception as ex:
+        print("select_2by2:", str(ex))
+        return False
 
-
-
-
-
-
-
+def select_3by3(driver,selection):
+    wait = WebDriverWait(driver, 10)
+    
     return
-
 
 def third_page_test(driver):
     try:
@@ -321,25 +349,28 @@ def app_iscsi_test(driver, selection):
             app_btn = driver.find_element_by_id('app_iscsi')
             driver.execute_script("arguments[0].click()", app_btn)
 
-            element = driver.find_element_by_css_selector("button.margin_bottom30")
+            element = driver.find_element_by_css_selector(
+                "button.margin_bottom30")
             driver.execute_script("arguments[0].click()", element)
 
             WebDriverWait(driver, 10).until(EC.presence_of_element_located(
                 (By.XPATH, "//input[@iops='"+str(i)+"']"))
             )
-            ## click next and check if it will go to third page, then False
-            
-            driver.find_element_by_xpath("//button[@class='btn btn-primary blue']").click()
-            element = driver.find_element_by_xpath("//label[@class='error_vmm_total']")
-            
+            # click next and check if it will go to third page, then False
+
+            driver.find_element_by_xpath(
+                "//button[@class='btn btn-primary blue']").click()
+            element = driver.find_element_by_xpath(
+                "//label[@class='error_vmm_total']")
+
             if element.get_attribute('style') != '':
                 flag = False
-            
 
             blank = driver.find_element_by_xpath("//input[@iops='"+str(i)+"']")
             blank.clear()
             blank.send_keys("100")
-            driver.find_element_by_xpath("//button[@class='btn btn-primary blue']").click()
+            driver.find_element_by_xpath(
+                "//button[@class='btn btn-primary blue']").click()
 
             # wait
             WebDriverWait(driver, 10).until(EC.presence_of_element_located(
@@ -352,12 +383,7 @@ def app_iscsi_test(driver, selection):
             ress = WebDriverWait(driver, 10,).until(
                 EC.presence_of_element_located((By.XPATH, "//label[@for='user_type_business']")))
 
-
         return flag
     except Exception as ex:
-        print("app_iscsi_test",str(ex))
+        print("app_iscsi_test", str(ex))
         return False
-    
-    
-
-

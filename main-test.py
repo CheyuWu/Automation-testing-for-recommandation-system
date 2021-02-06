@@ -13,7 +13,7 @@ import asyncio
 def main():
     start = time.time()
     # driver
-    durl = "./chromedriver.exe"
+    durl = "./chromedriver"
     driver = webdriver.Chrome(durl)
 
     wait = WebDriverWait(driver, 10)
@@ -27,24 +27,23 @@ def main():
         selection = get_data()
         # # Select 1 by 1 and check the workflow of the 1-3 page is functionable
 
-        ## first page click more than 3:
+        # first page click more than 3:
         # page_1_4orMore=select_4orMore(driver, selection)
         # print("Page 1 selected more than 4 app disable? ",page_1_4orMore)
-        ## Select 1 by 1
+        # Select 1 by 1
         # page_1, page_2 = select_1by1(driver, selection)
         # print("Page 1 functionable? ", page_1)
         # print("Page 2 functionable? ", page_2)
         # time.sleep(3)
         # driver.refresh()
-        ## Select 2 by 2
-        select_2by2(driver, selection)
+        # Select 2 by 2
+        res_2by2 = select_2by2(driver, selection)
+        print("Select 2 by 2:", res_2by2)
         # app_iscsi_test(driver, selection)
 
-        ## Third page Test
+        # Third page Test
         # page_3 = third_page_test(driver)
         # print("Page 3 functionable? ", page_3)
-
-        
 
     driver.close()
     print("elapsed time:", time.time()-start)
