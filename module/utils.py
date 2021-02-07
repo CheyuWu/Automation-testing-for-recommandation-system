@@ -2,8 +2,8 @@ from requests import get
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
-from selenium.common.exceptions import TimeoutException
-
+from selenium.common.exceptions import TimeoutException, NoSuchElementException
+from selenium.webdriver import ActionChains
 def check_response(url):
     try:
         request = get(url)
@@ -170,7 +170,6 @@ def btn_in_first_page(driver, condition):
 
 # click the btn in the second pages
 
-
 def btn_in_second_page(driver):
     try:
         # Click "next" button to the third page
@@ -184,7 +183,7 @@ def btn_in_second_page(driver):
         )
         return True
     except TimeoutException:
-        # if I enter the strange value it will nothing output
+        ## if I enter the strange value it will nothing output
         print("btn_in_second_page: ", "TimeoutException, No items output")
         return True
     except Exception as ex:
@@ -213,6 +212,29 @@ def click_btn(driver, click_lst):
         return False
 
 
-def items_btn_click(driver, click_lst):
+def third_to_first_page(driver, user_type, unclick_app = None):
+    try:
+        flag = True
+        AC = ActionChains(driver)
+        ## Back to first page
+        reset = driver.find_element_by_id("reset_result")
+        driver.execute_script("arguments[0].click()", reset)
+        ## Click the user_type
+        user_type_btn = WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, "//label[@for='"+str(user_type)+"']")))
+        driver.execute_script("arguments[0].click()", user_type_btn)
 
-    return
+        return flag
+
+    except NoSuchElementException:
+        back_btn = driver.find_element_by_xpath("//i[@class='fa fa-angle-left']")
+        ## Click twice and back to first page
+        AC.move_to_element(back_btn).double_click().perform()
+        #WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, "//label[@for='"+str(user_type)+"']")))
+        click_result = click_btn(driver, unclick_app)
+        if not click_result:
+            # do something
+            flag = False
+        return flag
+    except Exception as ex:
+        print("third_to_first_page: ",str(ex))
+        return False
