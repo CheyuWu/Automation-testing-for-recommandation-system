@@ -132,7 +132,7 @@ def main():
         driver.close()
         print("elapsed time:", time.time()-start)
 
-        print(pd.DataFrame(log_data))
+        print(pd.DataFrame(log_data).T)
         pd.DataFrame(log_data).T.to_csv("./log.csv",encoding="utf_8_sig")
     except Exception as ex:
         print("Main exception:",str(ex))
