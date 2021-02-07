@@ -1,0 +1,13 @@
+﻿,Status,Elapsed_Time
+Connection_Test,True,5.36501932144165
+Page_1_to_Page_2,True,112.80906462669373
+Page_2_to_Page_3,True,112.80906462669373
+Page_3_to_Page_1,True,112.80906462669373
+Select_2_by_2,True,30.208468675613403
+Select_3_by_3,True,218.5361201763153
+app_iscsi_test,True,11.190133571624756
+third_page_test,True,32.320096015930176
+page_1_selected_4_or_More,True,2.377959728240967
+Unclick app 1 result(s),True,4.823599100112915
+Unclick app 2 result(s),True,7.67077374458313
+Unclick app 3 result(s),True,36.498364210128784
